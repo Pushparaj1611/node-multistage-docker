@@ -1,18 +1,37 @@
-name: Docker Image CI
+name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - main
 
 jobs:
-
-  build:
-
-    runs-on: mayur
+  build-and-push:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        os: [windows-2019] # Specify the version of Windows runner you are using
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker images | docker build .  --tag sample
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        run: |
+          docker build . --file Dockerfile --tag sample
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+
+      - name: Run Docker image
+        run: |
+          docker run sample
