@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: pushparajnodemultistagedocker 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pushparajnodemultistagedocker
+  template:
+    metadata:
+      labels:
+        app: pushparajnodemultistagedocker 
+    spec:
+      containers:
+        - name: pushparajnodemultistagedocker 
+          image: acrforaksdemo94.azurecr.io/pushparajnodemultistagedocker
+          ports:
+          - containerPort: 4002
